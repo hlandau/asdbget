@@ -1,3 +1,8 @@
+Thu Feb 10, 2000  Jay 'Eraserhead' Felice <jasonf@cleveland.lug.net>	
+	* Clean up -l5250 translation map handling to work with tn5250 >=
+	  0.15.7
+	* Add asdb2tab perl script to distribution.  Add autogen.sh to CVS.
+
 Wed Feb  9, 2000  Jay 'Eraserhead' Felice <jasonf@cleveland.lug.net>
 	* Password can now be specified by using ASDBGET_PASSWORD environment
 	  variable, or asdbget will prompt otherwise.
@@ -11,8 +16,6 @@ Wed Feb  9, 2000  Jay 'Eraserhead' Felice <jasonf@cleveland.lug.net>
 	  time.  Currently does not detect newer (CVS) versions of lib5250.
 	* Produce warning and still read response when last record is an
 	  incomplete length.
-	* Clean up -l5250 translation map handling to work with tn5250 >=
-	  0.15.7
 
 Sun Dec 12, 1999  Jay 'Eraserhead' Felice <jasonf@cleveland.lug.net>
 	* Written.
