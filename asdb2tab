@@ -1,0 +1,72 @@
+#!/usr/bin/perl -w
+# vi:set sts=2 sw=2 autoindent:
+#
+# asdb2tab - Translate the ASDB XML format into a tab-delimited file.
+# Syntax:
+#   asdb2tab
+#
+
+use XML::Parser;
+use strict;
+
+$::datum_name = undef;
+$::datum = '';
+%::fields = ();
+
+my $p = new XML::Parser(
+  Style => 'Subs',
+  Pkg => 'ASDB::Parser',
+  Handlers => { Char => \&ASDB::Parser::Char }
+);
+$p->parse(*STDIN);
+
+##############################################################################
+# ASDB::Parser - Handlers for various tags, and handler for character data.
+#
+
+sub ASDB::Parser::DATUM {
+  shift; shift;
+  while ($_ = uc(shift)) {
+    $_ eq 'NAME' && do {
+      $::datum_name = uc(shift);
+      next;
+    };
+    shift;
+  }
+  $::datum = '';
+}
+
+sub ASDB::Parser::DATUM_ {
+  $::record{uc($::datum_name)} = $::datum;
+  $::datum_name = undef;
+}
+
+sub ASDB::Parser::FIELD {
+  shift; shift;
+  my %params;
+  $params{uc($_)} = shift while ($_ = shift);
+  $::fields{uc($params{'NAME'})} = \%params;
+}
+
+sub ASDB::Parser::LAYOUT_ {
+  @::fields = sort {
+    $::fields{$a}->{'OFFSET'} <=> $::fields{$b}->{'OFFSET'};
+  } keys %::fields;
+}
+
+sub ASDB::Parser::Char {
+  my ($expat,$data) = @_;
+  $::datum .= $data if (defined($::datum_name));
+}
+
+sub ASDB::Parser::RECORD_ {
+  my $fieldn;
+  my @values;
+  for $fieldn (0 .. $#::fields) {
+    print $::record{$::fields[$fieldn]}
+      if defined ($::record{$::fields[$fieldn]});
+    print "\t" if $fieldn != $#::fields;
+  }
+  print "\n";
+  undef %::record;
+}
