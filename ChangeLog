@@ -1,3 +1,6 @@
+Fri Feb 18, 2000  Jay 'Eraserhead' Felice <jasonf@cleveland.lug.net>
+	* Default map (when not specified) is now "37" instead of "en".
+
 Thu Feb 17, 2000  Jay 'Eraserhead' Felice <jasonf@cleveland.lug.net>
 	* Replaced ASDB.dtd with Gomez Henri's ASDB.dtd, which passes xml
 	  validation tests.

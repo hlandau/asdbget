@@ -498,7 +498,7 @@ main (argc, argv)
   if (opt_map)
     map = tn5250_char_map_new (opt_map);
   else
-    map = tn5250_char_map_new ("en");
+    map = tn5250_char_map_new ("37");
 #endif /* HAVE_LIB5250 */
 
   if (optind >= argc)
