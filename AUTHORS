@@ -1,0 +1,8 @@
+asdbget AUTHORS
+------------------------------------------------------------------------------
+
+Jay 'Eraserhead' Felice <jasonf@cleveland.lug.net>
+Gomez Henri
+
+... with lots of thanks to Michael Madore for providing his `convert' and
+`as4002unix' utilities to hack large chunks from, and for finding ftplib.

@@ -1,0 +1,13 @@
+configure
+config.guess
+config.sub
+Makefile.in
+aclocal.m4
+install-sh
+missing
+mkinstalldirs
+*~
+*.rej
+*.orig
+COPYING
+INSTALL
