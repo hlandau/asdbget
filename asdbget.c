@@ -165,6 +165,10 @@ static void	XML_record	PARMS ((void));
 static void
 syntax ()
 {
+#ifdef HAVE_LIB5250
+  Tn5250CharMap *m = tn5250_transmaps;
+  int i = 0;
+#endif
 #ifdef HAVE_GETOPT_LONG
   printf ("asdbget - Get and Translate AS/400 Database Files via FTP.\n\
 Syntax:\n\
@@ -172,7 +176,15 @@ Syntax:\n\
 \n\
 Options:\n"
 #ifdef HAVE_LIB5250
-"  --map, -m MAP                 Use MAP as translation map (default: %s).\n"
+"  --map, -m MAP                 Use MAP as translation map (default: 37):");
+  while (m->name != NULL)
+    {
+      if (i % 8 == 0)
+	printf ("\n                                  ");
+      printf ("%s, ", m->name);
+      m++; i++;
+    }
+  printf ("\n"
 #endif
 "  --output, -o OFILE            Specify output file (default: stdout).\n\
   --user, -u UNAME              Specify the login user (default: %s).\n\
@@ -184,11 +196,19 @@ Syntax:\n\
 \n\
 Options:\n"
 #ifdef HAVE_LIB5250
-"  -m MAP                        Use MAP as translation map (default: %s).\n"
+"  -m MAP                        Use MAP as translation map (default: 37):\n");
+  while (m->name != NULL)
+    {
+      if (i % 8 == 0)
+	printf ("\n                                  ");
+      printf ("%s, ", m->name);
+      m++; i++;
+    }
+  printf ("\n"
 #endif
 "  -o OFILE                      Specify output file (default: stdout).\n\
   -u UNAME                      Specify the login user (default: %s).\n\
-\n", "en", opt_user);
+\n", opt_user);
 #endif
   exit (1);
 }
@@ -495,10 +515,10 @@ main (argc, argv)
 	}
     }
 #ifdef HAVE_LIB5250 
-  if (opt_map)
-    map = tn5250_char_map_new (opt_map);
-  else
-    map = tn5250_char_map_new ("37");
+  if (opt_map == NULL)
+    opt_map = "37";
+  if ((map = tn5250_char_map_new (opt_map)) == NULL)
+    syntax ();
 #endif /* HAVE_LIB5250 */
 
   if (optind >= argc)
