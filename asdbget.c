@@ -72,9 +72,9 @@ typedef struct field_tag field_t;
 
 
 #ifdef HAVE_LIB5250
-static char shortopts[] = "F:m:o:O:pR:u:";
+static char shortopts[] = "m:o:pu:";
 #else
-static char shortopts[] = "F:o:O:pR:u:";
+static char shortopts[] = "o:pu:";
 #endif
 
 #ifdef HAVE_GETOPT_LONG

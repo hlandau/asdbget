@@ -5,6 +5,7 @@ Fri Feb 18, 2000  Jay 'Eraserhead' Felice <jasonf@cleveland.lug.net>
 	* Added --prompt, -p flag - ignores ASDBGET_PASSWORD environment
 	  variable if supplied.
 	* Added 'Environment' section to usage message.
+	* Removed unused flags/options from `shortopts'.
 
 Thu Feb 17, 2000  Jay 'Eraserhead' Felice <jasonf@cleveland.lug.net>
 	* Replaced ASDB.dtd with Gomez Henri's ASDB.dtd, which passes xml
