@@ -1,3 +1,7 @@
+Thu Mar 14, 2002  Jay 'Eraserhead' Felice <jfelice@cronosys.com>
+	* configure.in: Changed version to 0.3.
+	* autogen.sh: don't need to run autoheader.
+	
 Thu Mar 16, 2000  Jay 'Eraserhead' Felice <jasonf@cleveland.lug.net>
 	* Fixed incorrect handling of zoned decimal fields (reported by
 	  Sean Porterfield).

@@ -6,7 +6,6 @@
 
 aclocal || exit $?
 autoconf || exit $?
-autoheader || exit $?
 
 #
 # Sometimes we need to run automake twice, as it will fail the first time when
