@@ -1,6 +1,12 @@
 configure
+config.h.in
+asdbget
+config.status
+Makefile
 config.guess
 config.sub
+config.log
+config.cache
 Makefile.in
 aclocal.m4
 install-sh
