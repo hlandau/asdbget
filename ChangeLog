@@ -1,4 +1,8 @@
-Wed Mar 01, 2000  Jay 'Eraserhead' Felcie <jasonf@cleveland.lug.net>
+Thu Mar 16, 2000  Jay 'Eraserhead' Felice <jasonf@cleveland.lug.net>
+	* Fixed incorrect handling of zoned decimal fields (reported by
+	  Sean Porterfield).
+
+Wed Mar 01, 2000  Jay 'Eraserhead' Felice <jasonf@cleveland.lug.net>
 	* Added information on how to build from CVS to the `README' file.
 
 Fri Feb 18, 2000  Jay 'Eraserhead' Felice <jasonf@cleveland.lug.net>

@@ -382,11 +382,10 @@ signed2int (buf, len)
     {
       v *= 10;
       v += buf[0] & 0x0f;
-      len--;
+      if (--len == 0 && (buf[0] & 0xf0) == 0xd0)
+	v = -v;
       buf++;
     }
-  if ((buf[0] & 0xf0) == 0xd0)
-    v = -v;
   return v;
 }
 
