@@ -210,33 +210,15 @@ get_file (name, lrl, cb)
       perror ("asdbget");
       exit (1);
     }
-  if (!FtpAccess (name, FTPLIB_FILE_READ, FTPLIB_IMAGE, nControl, &nData))
+  if (!FtpAccess (name, FTPLIB_FILE_READ, FTPLIB_IMAGE, FTPLIB_RECORD, nControl, &nData))
     {
       fprintf (stderr, "asdbget: while trying to retreive '%s':\n%s\n",
 	  name, FtpLastResponse (nControl));
       exit (1);
     }
 
-  while ((r = FtpRead (buf, lrl, nData)))
-    {
-      if (r == -1 || r > lrl)
-	break;
-
-      i = r;
-      while (i < lrl)
-	{
-	  r = FtpRead (buf + i, lrl - i, nData);
-	  if (r <= 0 || r > lrl)
-	    {
-	      fprintf (stderr, "asdbget: while trying to retreive '%s':\n\
-Warning: incomplete last record.\n");
-	      goto error_out;
-	    }
-	  i += r;
-	}
-	
-      (* cb) (buf);
-    }
+  while ((r = FtpReadRecord (buf, lrl, nData)) >= 0)
+    (* cb) (buf);
 
 error_out:
   free (buf);
@@ -579,7 +561,9 @@ main (argc, argv)
 
   FtpQuit (nControl);
   FtpClose (nControl);
+#ifdef HAVE_LIB5250
   tn5250_char_map_destroy (map);
+#endif
 
   if (outf != stdout)
     fclose (outf);

@@ -6,7 +6,29 @@ dnl Checks for programs.
 AC_PROG_CC
 
 dnl Checks for libraries.
-AC_CHECK_LIB(5250,tn5250_char_map_new)
+AC_PATH_PROG(TN5250_CONFIG,tn5250-config,no)
+if test x$TN5250_CONFIG != xno
+then
+  OLD_CFLAGS="$CFLAGS"
+  OLD_LIBS="$LIBS"
+  AC_MSG_CHECKING(for -l5250 C flags)
+  TN5250_CFLAGS="`$TN5250_CONFIG --cflags`"
+  CFLAGS="$CFLAGS $TN5250_CFLAGS"
+  AC_MSG_RESULT($TN5250_CFLAGS)
+  AC_MSG_CHECKING(for -l5250 ld flags)
+  TN5250_LIBS="`$TN5250_CONFIG --libs`"
+  LIBS="$LIBS $TN5250_LIBS"
+  AC_MSG_RESULT($TN5250_LIBS)
+
+  AC_CHECK_LIB(5250,tn5250_char_map_new)
+  if test x$ac_cv_lib_5250_tn5250_char_map_new = xno
+  then
+    AC_MSG_WARN([** lib5250 not new enough to support translation maps **])
+    AC_MSG_WARN([** translation maps (-m option) will not be available **])
+    CFLAGS="$OLD_CFLAGS"
+    LIBS="$OLD_LIBS"
+  fi
+fi
 
 dnl Checks for header files.
 AC_HEADER_STDC

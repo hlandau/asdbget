@@ -43,10 +43,15 @@
 #define FTPLIB_FILE_WRITE 4
 
 /* FtpAccess() mode codes */
-#define FTPLIB_ASCII 'A'
-#define FTPLIB_IMAGE 'I'
+#define FTPLIB_ASCII 	'A'
+#define FTPLIB_EBCDIC 	'E'
+#define FTPLIB_IMAGE 	'I'
 #define FTPLIB_TEXT FTPLIB_ASCII
 #define FTPLIB_BINARY FTPLIB_IMAGE
+
+/* FtpAccess() structure codes */
+#define FTPLIB_FILE	'F'
+#define FTPLIB_RECORD	'R'
 
 #ifdef __cplusplus
 extern "C" {
@@ -79,9 +84,10 @@ GLOBALREF void FtpInit(void);
 GLOBALREF char *FtpLastResponse(netbuf *nControl);
 GLOBALREF int FtpConnect(const char *host, netbuf **nControl);
 GLOBALREF int FtpLogin(const char *user, const char *pass, netbuf *nControl);
-GLOBALREF int FtpAccess(const char *path, int typ, int mode, netbuf *nControl,
-    netbuf **nData);
+GLOBALREF int FtpAccess(const char *path, int typ, int mode, int stru,
+    netbuf *nControl, netbuf **nData);
 GLOBALREF int FtpRead(void *buf, int max, netbuf *nData);
+GLOBALREF int FtpReadRecord(void *buf, int max, netbuf *nData);
 GLOBALREF int FtpWrite(void *buf, int len, netbuf *nData);
 GLOBALREF int FtpClose(netbuf *nData);
 GLOBALREF int FtpSite(const char *cmd, netbuf *nControl);
@@ -91,9 +97,9 @@ GLOBALREF int FtpRmdir(const char *path, netbuf *nControl);
 GLOBALREF int FtpNlst(const char *output, const char *path, netbuf *nControl);
 GLOBALREF int FtpDir(const char *output, const char *path, netbuf *nControl);
 GLOBALREF int FtpGet(const char *output, const char *path, char mode,
-	netbuf *nControl);
+	int stru, netbuf *nControl);
 GLOBALREF int FtpPut(const char *input, const char *path, char mode,
-	netbuf *nControl);
+	int stru, netbuf *nControl);
 GLOBALREF int FtpRename(const char *src, const char *dst, netbuf *nControl);
 GLOBALREF int FtpDelete(const char *fnm, netbuf *nControl);
 GLOBALREF void FtpQuit(netbuf *nControl);

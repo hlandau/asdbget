@@ -541,8 +541,8 @@ static int FtpOpenPort(netbuf *nControl, netbuf **nData, int mode, int dir)
  *
  * return 1 if successful, 0 otherwise
  */
-GLOBALDEF int FtpAccess(const char *path, int typ, int mode, netbuf *nControl,
-    netbuf **nData)
+GLOBALDEF int FtpAccess(const char *path, int typ, int mode, int stru, 
+    netbuf *nControl, netbuf **nData)
 {
     char buf[256];
     int dir;
@@ -554,6 +554,9 @@ GLOBALDEF int FtpAccess(const char *path, int typ, int mode, netbuf *nControl,
     sprintf(buf, "TYPE %c", mode);
     if (!FtpSendCmd(buf, '2', nControl))
 	return 0;
+    sprintf (buf, "STRU %c", stru);
+    if (!FtpSendCmd(buf, '2', nControl))
+        return 0;
     switch (typ)
     {
       case FTPLIB_DIR:
@@ -599,6 +602,90 @@ GLOBALDEF int FtpRead(void *buf, int max, netbuf *nData)
     if (nData->buf)
     	return readline(buf, max, nData);
     return net_read(nData->handle, buf, max);
+}
+
+/*
+ * FtpReadRecord - read and unescape a record.  We don't just implement
+ *                 this in FtpRead because we want that to returned the
+ *                 raw (escaped) data so that we have a format which we
+ *                 can send back to a record-based host.  This is for
+ *                 when we want to do record-based processing locally.
+ *
+ *                 XXX: Right now, if record is larger than buffer, record
+ *                 is silently truncated.
+ */
+GLOBALDEF int FtpReadRecord(void *buf, int max, netbuf *nData)
+{
+    unsigned char *cbuf = (unsigned char*)buf;
+    int ofs = 0;
+    int esc_flag = 0;
+    unsigned char c;
+
+    if (nData->dir == -1)
+	return -2; /* EOF */
+    if (nData->dir != FTPLIB_READ)
+	return 0;
+
+    do
+    {
+	/* Fill buffer if empty. */
+	if (nData->cavail <= 0)
+	{
+	    if (nData->buf == NULL)
+	    {
+	        nData->buf = malloc (FTPLIB_BUFSIZ);
+		if (nData->buf == NULL)
+		    return -1; /* Out of memory */
+	    }
+	    nData->cavail = net_read (nData->handle, nData->buf, FTPLIB_BUFSIZ);
+	    nData->cleft = nData->cavail;
+	    nData->cget = nData->buf;
+	    if (nData->cavail == -1)
+	    {
+		nData->cavail = 0;
+		return -1;
+	    }
+	    if (nData->cavail == 0)
+		return -1;  /* Unexpected EOF */
+	}
+
+	/* Get the next char */
+	c = nData->cget[0];
+	nData->cget++;
+
+	if (esc_flag)
+	{
+	    switch (c)
+	    {
+	    case 0xff:
+		if (ofs < max)
+		    cbuf[ofs++] = 0xff;
+		break;
+
+	    case 0x01:
+		return ofs; /* EOR */
+
+	    case 0x03:
+		nData->dir = -1; /* Flag EOF for next time. */
+		return ofs;
+
+	    case 0x02:
+		nData->dir = -1;
+		return -2;
+	    }
+	}
+	else
+	{
+	    if (c == 0xff)
+	    {
+		esc_flag = 1;
+		continue;
+	    }
+	    if (ofs < max)
+		cbuf[ofs++] = c;
+	}
+    }
+    while (1);
 }
 
 /*
@@ -708,7 +795,7 @@ GLOBALDEF int FtpRmdir(const char *path, netbuf *nControl)
  * return 1 if successful, 0 otherwise
  */
 static int FtpXfer(const char *localfile, const char *path,
-	netbuf *nControl, int typ, int mode)
+	netbuf *nControl, int typ, int mode, int stru)
 {
     int l,c;
     char *dbuf;
@@ -726,7 +813,7 @@ static int FtpXfer(const char *localfile, const char *path,
     }
     if (local == NULL)
 	local = (typ == FTPLIB_FILE_WRITE) ? stdin : stdout;
-    if (!FtpAccess(path, typ, mode, nControl, &nData))
+    if (!FtpAccess(path, typ, mode, stru, nControl, &nData))
 	return 0;
     dbuf = malloc(FTPLIB_BUFSIZ);
     if (typ == FTPLIB_FILE_WRITE)
@@ -760,7 +847,7 @@ static int FtpXfer(const char *localfile, const char *path,
 GLOBALDEF int FtpNlst(const char *outputfile, const char *path,
 	netbuf *nControl)
 {
-    return FtpXfer(outputfile, path, nControl, FTPLIB_DIR, FTPLIB_ASCII);
+    return FtpXfer(outputfile, path, nControl, FTPLIB_DIR, FTPLIB_ASCII, FTPLIB_FILE);
 }
 
 /*
@@ -770,7 +857,7 @@ GLOBALDEF int FtpNlst(const char *outputfile, const char *path,
  */
 GLOBALDEF int FtpDir(const char *outputfile, const char *path, netbuf *nControl)
 {
-    return FtpXfer(outputfile, path, nControl, FTPLIB_DIR_VERBOSE, FTPLIB_ASCII);
+    return FtpXfer(outputfile, path, nControl, FTPLIB_DIR_VERBOSE, FTPLIB_ASCII, FTPLIB_FILE);
 }
 
 /*
@@ -779,9 +866,9 @@ GLOBALDEF int FtpDir(const char *outputfile, const char *path, netbuf *nControl)
  * return 1 if successful, 0 otherwise
  */
 GLOBALDEF int FtpGet(const char *outputfile, const char *path,
-	char mode, netbuf *nControl)
+	char mode, int stru, netbuf *nControl)
 {
-    return FtpXfer(outputfile, path, nControl, FTPLIB_FILE_READ, mode);
+    return FtpXfer(outputfile, path, nControl, FTPLIB_FILE_READ, mode, stru);
 }
 
 /*
@@ -790,9 +877,9 @@ GLOBALDEF int FtpGet(const char *outputfile, const char *path,
  * return 1 if successful, 0 otherwise
  */
 GLOBALDEF int FtpPut(const char *inputfile, const char *path, char mode,
-	netbuf *nControl)
+	int stru, netbuf *nControl)
 {
-    return FtpXfer(inputfile, path, nControl, FTPLIB_FILE_WRITE, mode);
+    return FtpXfer(inputfile, path, nControl, FTPLIB_FILE_WRITE, mode, stru);
 }
 
 /*
@@ -840,3 +927,5 @@ GLOBALDEF void FtpQuit(netbuf *nControl)
     free(nControl->buf);
     free(nControl);
 }
+
+/* vi: set sts=4 sw=4: */
