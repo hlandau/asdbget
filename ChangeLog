@@ -1,3 +1,6 @@
+Wed Mar 01, 2000  Jay 'Eraserhead' Felcie <jasonf@cleveland.lug.net>
+	* Added information on how to build from CVS to the `README' file.
+
 Fri Feb 18, 2000  Jay 'Eraserhead' Felice <jasonf@cleveland.lug.net>
 	* Default map (when not specified) is now "37" instead of "en".
 	* If map is invalid, show syntax and exit.

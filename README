@@ -18,6 +18,10 @@ parsers can generate any needed file format from the XML, and that keeps this
 utility simple and to-the-point.  At least with expat, you can parse documents
 on the fly via piping if you're worried about disk space.
 
+The included asdb2tab Perl script is a useful demonstration of using the
+XML::Parser perl module to translate the format on the fly.  You will need to
+download and install the XML::Parser module from your favorite CPAN archive.
+
 Any bugs, comments, or suggestions can be emailed to me at:
 jasonf@cleveland.lug.net
 
