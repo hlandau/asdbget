@@ -1,3 +1,9 @@
+Thu Feb 17, 2000  Jay 'Eraserhead' Felice <jasonf@cleveland.lug.net>
+	* Replaced ASDB.dtd with Gomez Henri's ASDB.dtd, which passes xml
+	  validation tests.
+	* Added ASDB.xsl provided by Elias Mandouval.
+	* Added <?xml-stylsheet ... ?> header to produced XML.
+
 Tue Feb 15, 2000  Jay 'Eraserhead' Felice <jasonf@cleveland.lug.net>
 	* Forgot to put quotes around value in RECLEN= for LAYOUT tag.
 

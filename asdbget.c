@@ -577,7 +577,8 @@ XML_header ()
   field_t *iter;
 
   fprintf (outf, "<?xml version=\"1.0\"?>\n\
-<!DOCTYPE ASDB SYSTEM \"%s/%s/ASDB.dtd\">\n", DATADIR, PACKAGE);
+<?xml-stylesheet type=\"text/xsl\" href=\"file:%s/%s/ASDB.xsl\"?>\n\
+<!DOCTYPE ASDB SYSTEM \"%s/%s/ASDB.dtd\">\n", DATADIR, PACKAGE, DATADIR, PACKAGE);
 
   fprintf (outf, "<ASDB VERSION=\"%s\">\n\
   <LAYOUT RECLEN=\"%d\">\n", DTDVERSION, file_lrl);
