@@ -4,12 +4,15 @@ Wed Feb  9, 2000  Jay 'Eraserhead' Felice <jasonf@cleveland.lug.net>
 	* XML_putc: '\'' => &apos;
 	* Quote XML attribute values, expat, and therefore XML::Parser, do
 	  not like the XML otherwise.
-	* Patch for handling 'Z' (timestamp) fields from Gomez Henri.
+	* Patch for handling 'Z' (timestamp) fields from Gomez Henri, including
+	  support in ASDB.dtd for specifying Z as field type.
 	* Patch for using lib5250 for character conversion from Gomez Henri,
 	  some clean up to dectect whether or not we have -l5250 at configure
 	  time.  Currently does not detect newer (CVS) versions of lib5250.
 	* Produce warning and still read response when last record is an
 	  incomplete length.
+	* Clean up -l5250 translation map handling to work with tn5250 >=
+	  0.15.7
 
 Sun Dec 12, 1999  Jay 'Eraserhead' Felice <jasonf@cleveland.lug.net>
 	* Written.

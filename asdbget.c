@@ -32,6 +32,10 @@
 #ifdef HAVE_TERMIOS_H
 #include <termios.h>
 #endif
+#ifdef HAVE_LIB5250
+#include <tn5250/config.h>
+#include <tn5250/utility.h>
+#endif
 #include "ftplib.h"
 
 #ifdef __STDC__
@@ -123,6 +127,8 @@ static const Byte e2a [256] =
    48, 49, 50, 51, 52, 53, 54, 55,	/* 240 - 247 */
    56, 57, 250, 251, 252, 253, 254, 255,	/* 248 - 255 */
   };
+#else
+static Tn5250CharMap *map = NULL;
 #endif
 
   /* Command-line options */
@@ -292,7 +298,7 @@ get_ffd_data_cb (buf)
   /* WHFLDI */
   for (i = 0; i < 10; i++)
 #ifdef HAVE_LIB5250 
-    field->name[i] = tn5250_ebcdic2ascii(buf[129+i]);
+    field->name[i] = tn5250_char_map_to_local(map, buf[129+i]);
 #else
     field->name[i] = e2a [buf[129+i]];
 #endif /* HAVE_LIB5250 */
@@ -304,7 +310,7 @@ get_ffd_data_cb (buf)
   /* WHFTXT */
   for (i = 0; i < 50; i++)
 #ifdef HAVE_LIB5250 
-    field->desc[i] = tn5250_ebcdic2ascii(buf[168+i]);
+    field->desc[i] = tn5250_char_map_to_local(map, buf[168+i]);
 #else
     field->desc[i] = e2a [buf[168+i]];
 #endif /* HAVE_LIB5250 */
@@ -315,7 +321,7 @@ get_ffd_data_cb (buf)
 
   /* WHFLDT */
 #ifdef HAVE_LIB5250 
-  field->type = tn5250_ebcdic2ascii(buf[321]);
+  field->type = tn5250_char_map_to_local(map, buf[321]);
 #else
   field->type = e2a [buf[321]];
 #endif /* HAVE_LIB5250 */
@@ -436,7 +442,7 @@ file_data_cb (buf)
 		l--;
 	      for (i = 0; i < l; i++)
 #ifdef HAVE_LIB5250 
-		*ptr++ = tn5250_ebcdic2ascii(data[i]);
+		*ptr++ = tn5250_char_map_to_local (map, data[i]);
 #else
 		*ptr++ = e2a[data[i]];
 #endif /* HAVE_LIB5250 */
@@ -450,7 +456,7 @@ file_data_cb (buf)
 
 	      for (i = 0; i < iter->length; i++)
 #ifdef HAVE_LIB5250
-		*ptr++ = tn5250_ebcdic2ascii(data[i]);
+		*ptr++ = tn5250_char_map_to_local (map, data[i]);
 #else
 		*ptr++ = e2a[data[i]];
 #endif /* HAVE_LIB5250 */
@@ -508,9 +514,9 @@ main (argc, argv)
     }
 #ifdef HAVE_LIB5250 
   if (opt_map)
-    tn5250_settransmap(opt_map);
+    map = tn5250_char_map_new (opt_map);
   else
-    tn5250_settransmap("en");
+    map = tn5250_char_map_new ("en");
 #endif /* HAVE_LIB5250 */
 
   if (optind >= argc)
@@ -573,6 +579,7 @@ main (argc, argv)
 
   FtpQuit (nControl);
   FtpClose (nControl);
+  tn5250_char_map_destroy (map);
 
   if (outf != stdout)
     fclose (outf);

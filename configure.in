@@ -6,7 +6,7 @@ dnl Checks for programs.
 AC_PROG_CC
 
 dnl Checks for libraries.
-AC_CHECK_LIB(5250,tn5250_settransmap)
+AC_CHECK_LIB(5250,tn5250_char_map_new)
 
 dnl Checks for header files.
 AC_HEADER_STDC
