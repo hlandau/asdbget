@@ -1,11 +1,16 @@
+Fri Feb 11, 2000  Jay 'Eraserhead' Felice <jasonf@cleveland.lug.net>
+	* Fix so that will compile without 0.15.7, fixed configure so that
+	  library *and supporting libraries* will be detected properly
+	  (may be necessary for some non-Linux systems).
+	* Use FTP's `R' (record) structure transfer mode so that we only
+	  have to make a guess about LRL which is >= end of last field we
+	  need.
+
 Thu Feb 10, 2000  Jay 'Eraserhead' Felice <jasonf@cleveland.lug.net>	
 	* Clean up -l5250 translation map handling to work with tn5250 >=
 	  0.15.7
 	* Add asdb2tab perl script to distribution.  Add autogen.sh to CVS.
 	* Released v0.2
-	* Fix so that will compile without 0.15.7, fixed configure so that
-	  library *and supporting libraries* will be detected properly
-	  (may be necessary for some non-Linux systems).
 
 Wed Feb  9, 2000  Jay 'Eraserhead' Felice <jasonf@cleveland.lug.net>
 	* Password can now be specified by using ASDBGET_PASSWORD environment

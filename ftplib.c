@@ -629,7 +629,7 @@ GLOBALDEF int FtpReadRecord(void *buf, int max, netbuf *nData)
     do
     {
 	/* Fill buffer if empty. */
-	if (nData->cavail <= 0)
+	if (nData->cleft <= 0)
 	{
 	    if (nData->buf == NULL)
 	    {
@@ -652,6 +652,7 @@ GLOBALDEF int FtpReadRecord(void *buf, int max, netbuf *nData)
 	/* Get the next char */
 	c = nData->cget[0];
 	nData->cget++;
+	nData->cleft--;
 
 	if (esc_flag)
 	{
