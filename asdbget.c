@@ -72,9 +72,9 @@ typedef struct field_tag field_t;
 
 
 #ifdef HAVE_LIB5250
-static char shortopts[] = "F:m:o:O:p:R:u:";
+static char shortopts[] = "F:m:o:O:pR:u:";
 #else
-static char shortopts[] = "F:o:O:p:R:u:";
+static char shortopts[] = "F:o:O:pR:u:";
 #endif
 
 #ifdef HAVE_GETOPT_LONG
@@ -84,6 +84,7 @@ static struct option longopts[] =
     { "map",		  1,	0,    'm' },
 #endif
     { "output",		  1,	0,    'o' },
+    { "prompt",		  0,	0,    'p' },
     { "user",		  1,    0,    'u' },
     { NULL }
   };
@@ -187,8 +188,12 @@ Options:\n"
   printf ("\n"
 #endif
 "  --output, -o OFILE            Specify output file (default: stdout).\n\
+  --prompt, -p                  Always prompt for password.\n\
   --user, -u UNAME              Specify the login user (default: %s).\n\
-\n", "en", opt_user);
+\n\
+Environment:\n\
+  ASDBGET_PASSWORD              Use this password to log in (use -p to ignore).\n\
+\n", opt_user);
 #else
   printf ("asdbget - Get and Translate AS/400 Database Files via FTP.\n\
 Syntax:\n\
@@ -207,7 +212,11 @@ Options:\n"
   printf ("\n"
 #endif
 "  -o OFILE                      Specify output file (default: stdout).\n\
+  -p                            Always prompt for password.\n\
   -u UNAME                      Specify the login user (default: %s).\n\
+\n\
+Environment:\n\
+  ASDBGET_PASSWORD              Use this password to log in (use -p to ignore).\n\
 \n", opt_user);
 #endif
   exit (1);
@@ -498,6 +507,10 @@ main (argc, argv)
 	{
 	case 'o':
 	  opt_output = optarg;
+	  break;
+
+	case 'p':
+	  opt_password = NULL;
 	  break;
 
 	case 'u':

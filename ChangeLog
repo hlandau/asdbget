@@ -2,6 +2,9 @@ Fri Feb 18, 2000  Jay 'Eraserhead' Felice <jasonf@cleveland.lug.net>
 	* Default map (when not specified) is now "37" instead of "en".
 	* If map is invalid, show syntax and exit.
 	* Add list of maps to syntax message.
+	* Added --prompt, -p flag - ignores ASDBGET_PASSWORD environment
+	  variable if supplied.
+	* Added 'Environment' section to usage message.
 
 Thu Feb 17, 2000  Jay 'Eraserhead' Felice <jasonf@cleveland.lug.net>
 	* Replaced ASDB.dtd with Gomez Henri's ASDB.dtd, which passes xml
