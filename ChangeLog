@@ -1,3 +1,6 @@
+Tue Feb 15, 2000  Jay 'Eraserhead' Felice <jasonf@cleveland.lug.net>
+	* Forgot to put quotes around value in RECLEN= for LAYOUT tag.
+
 Fri Feb 11, 2000  Jay 'Eraserhead' Felice <jasonf@cleveland.lug.net>
 	* Fix so that will compile without 0.15.7, fixed configure so that
 	  library *and supporting libraries* will be detected properly

@@ -580,7 +580,7 @@ XML_header ()
 <!DOCTYPE ASDB SYSTEM \"%s/%s/ASDB.dtd\">\n", DATADIR, PACKAGE);
 
   fprintf (outf, "<ASDB VERSION=\"%s\">\n\
-  <LAYOUT RECLEN=%d>\n", DTDVERSION, file_lrl);
+  <LAYOUT RECLEN=\"%d\">\n", DTDVERSION, file_lrl);
 
   if ((iter = fields) != NULL)
     {
